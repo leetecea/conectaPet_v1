@@ -60,6 +60,17 @@ export class ProfileComponent implements OnInit {
       this.toastr.error('ID de usuário inválido');
       return;
     }
+     this.userService.getUserById(id)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (user) => {
+        this.user = user;
+        this.updateFormWithUserData();
+      },
+      error: () => {
+        this.toastr.error('Erro ao carregar perfil do usuário.');
+      }
+    });
   }
 
    private initializeForm(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Pet } from '../../types/pet.type';
 import { PetService } from '../../services/pet.service';
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-pet-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, HeaderComponent],
+  imports: [CommonModule, RouterModule, HeaderComponent],
   templateUrl: './pet-details.component.html',
   styleUrls: ['./pet-details.component.scss']
 })
@@ -26,7 +26,7 @@ export class PetDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private petService: PetService,
-    private favoritesService: FavoritesService, 
+    private favoritesService: FavoritesService,
     private authService: AuthService,
     private router: Router
   ) {
