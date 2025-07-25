@@ -28,7 +28,7 @@
         <div class="detail-item"><strong>Porte:</strong> {{ pet.size }}</div>
         <div class="detail-item"><strong>Cor:</strong> {{ pet.color }}</div>
     </div>
-    
+
     <div class="ong-info" *ngIf="pet.ownerName">
       <h3>Informações da ONG</h3>
       <div class="ong-details">
@@ -38,20 +38,20 @@
         </button>
       </div>
     </div>
-    
+
     <div class="pet-description">
         <h3>Descrição</h3>
         <p>{{ pet.description }}</p>
     </div>
-    
-    <div class="action-buttons">
+
+    <!-- <div class="action-buttons">
       <button class="btn-adopt" *ngIf="(currentUser$ | async)?.userType === 'adotante'">
         Quero Adotar
       </button>
       <button class="btn-contact" *ngIf="(currentUser$ | async)?.userType === 'adotante'">
         Entrar em Contato
       </button>
-    </div>
+    </div> -->
   </div>
 </main>
 <ng-template #loading>
