@@ -1,0 +1,110 @@
+@import "../../../styles/variables.scss";
+
+main {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+
+.form-section {
+    flex: 0 0 500px;
+    justify-content: flex-start;
+    gap: 25px;
+
+    img {
+        width: 150px;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+
+    ::ng-deep form {
+      width: 100%;
+    }
+}
+
+.main-section {
+    flex-grow: 1;
+    background-color: $gray-bg;
+    justify-content: center;
+    gap: 8px;
+}
+
+// Botões
+.btn-wrapper {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        color: $text-color;
+        opacity: 0.3;
+
+        div {
+            flex-grow: 1;
+            height: 1px;
+            background-color: $text-color;
+        }
+    }
+
+    button {
+        width: 100%;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        border: none;
+        background: transparent;
+        padding: 12px 24px;
+        cursor: pointer;
+
+        &:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        &.btn-primary {
+            background-color: $primary-color;
+            color: white;
+            box-shadow: 0px 8px 12px rgba(148, 64, 255, 0.2);
+        }
+
+        &.btn-secondary {
+            border: 1px solid $primary-color;
+            color: $primary-color;
+        }
+    }
+}
+:host(.centered-layout) main {
+  justify-content: center; 
+
+  .form-section {
+    flex-grow: 0;
+  }
+
+  .main-section {
+    display: none;
+  }
+}

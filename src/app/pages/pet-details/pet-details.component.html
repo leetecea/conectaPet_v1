@@ -1,0 +1,43 @@
+<app-header></app-header>
+<main class="details-container" *ngIf="pet; else loading">
+  <div class="gallery-container">
+    <div class="main-image">
+      <img [src]="pet.imageUrls[currentImageIndex]" [alt]="pet.name">
+      <button class="nav-button prev" (click)="previousImage()" *ngIf="pet.imageUrls.length > 1">&#10094;</button>
+      <button class="nav-button next" (click)="nextImage()" *ngIf="pet.imageUrls.length > 1">&#10095;</button>
+    </div>
+  </div>
+
+  <div class="info-container">
+    <div class="pet-header">
+      <h1 class="pet-name">{{ pet.name }}</h1>
+      <button
+        *ngIf="isAuthenticated$ | async"
+        class="favorite-button"
+        (click)="toggleFavorite()"
+        [class.favorited]="isFavorited"
+      >
+        <span class="heart-icon">{{ isFavorited ? '❤️' : '🤍' }}</span>
+        <span>{{ isFavorited ? 'Favoritado' : 'Favoritar' }}</span>
+      </button>
+    </div>
+    <div class="pet-details">
+        <div class="detail-item"><strong>Espécie:</strong> {{ pet.species }}</div>
+        <div class="detail-item"><strong>Raça:</strong> {{ pet.breed }}</div>
+        <div class="detail-item"><strong>Idade:</strong> {{ pet.age }} anos</div>
+        <div class="detail-item"><strong>Gênero:</strong> {{ pet.gender }}</div>
+        <div class="detail-item"><strong>Porte:</strong> {{ pet.size }}</div>
+        <div class="detail-item"><strong>Cor:</strong> {{ pet.color }}</div>
+    </div>
+    <div class="pet-description">
+        <h3>Descrição</h3>
+        <p>{{ pet.description }}</p>
+    </div>
+    <button class="btn-adopt">Quero Adotar</button>
+  </div>
+</main>
+<ng-template #loading>
+    <div class="loading-container">
+        <p>Carregando detalhes do pet...</p>
+    </div>
+</ng-template>

@@ -1,0 +1,27 @@
+<div class="pet-card" (click)="onViewDetails()">
+  <div class="pet-image-container">
+    <img [src]="pet.imageUrls[0]" [alt]="'Foto de ' + pet.name" *ngIf="pet.imageUrls && pet.imageUrls.length > 0">
+    <div class="no-image" *ngIf="!pet.imageUrls || pet.imageUrls.length === 0">
+      <span>Sem foto</span>
+    </div>
+
+    <button
+      *ngIf="isAuthenticated"
+      class="favorite-btn"
+      [class.favorited]="isFavorited"
+      (click)="onToggleFavorite($event)"
+      type="button"
+    >
+      <span class="heart-icon">{{ isFavorited ? '❤️' : '🤍' }}</span>
+    </button>
+  </div>
+  <div class="pet-info">
+    <h3 class="pet-name">{{ pet.name }}</h3>
+    <p class="pet-breed">{{ pet.breed }}</p>
+    <div class="pet-tags">
+      <span>{{ pet.age }} anos</span>
+      <span>{{ pet.size }}</span>
+      <span>Cor: {{ pet.color }}</span>
+    </div>
+  </div>
+</div>
