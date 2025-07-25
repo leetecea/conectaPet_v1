@@ -1,0 +1,46 @@
+<app-header></app-header>
+<main class="meus-pets-container">
+  <div class="header-section">
+    <h1 class="title">Meus Pets Cadastrados</h1>
+    <p class="subtitle">Gerencie os pets que você cadastrou para adoção</p>
+    <button class="btn-add-pet" routerLink="/cadastro-pet">
+      <mat-icon>add</mat-icon>
+      Cadastrar Novo Pet
+    </button>
+  </div>
+
+  <div class="pets-grid" *ngIf="pets.length > 0; else noPets">
+    <div *ngFor="let pet of pets" class="pet-card-wrapper">
+      <app-pet-card
+        [pet]="pet"
+        [isFavorited]="false"
+        [isAuthenticated]="false"
+        [userType]="'ong'"
+      >
+      </app-pet-card>
+      <div class="pet-actions">
+        <button class="btn-edit" (click)="editPet(pet.id)">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </button>
+        <button class="btn-delete" (click)="deletePet(pet.id)">
+          <mat-icon>delete</mat-icon>
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noPets>
+    <div class="empty-state">
+      <div class="icon-wrapper">
+        <mat-icon>pets</mat-icon>
+      </div>
+      <h3>Nenhum pet cadastrado ainda</h3>
+      <p>Que tal cadastrar o primeiro pet para adoção?</p>
+      <button class="btn-add-first" routerLink="/cadastro-pet">
+        Cadastrar Primeiro Pet
+      </button>
+    </div>
+  </ng-template>
+</main>

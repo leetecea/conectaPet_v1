@@ -1,13 +1,14 @@
 <app-header></app-header>
 <main class="favorites-container">
   <h1>Meus Pets Favoritos</h1>
-  <ng-container *ngIf="{ pets: favoritePets$ | async, ids: favoritePetIds$ | async, auth: isAuthenticated$ | async } as data">
+  <ng-container *ngIf="{ pets: favoritePets$ | async, ids: favoritePetIds$ | async, auth: isAuthenticated$ | async, user: currentUser$ | async } as data">
     <div *ngIf="data.pets && data.pets.length > 0; else noFavorites" class="favorites-grid">
       <app-pet-card
         *ngFor="let pet of data.pets"
         [pet]="pet"
         [isFavorited]="isPetFavorited(pet.id, data.ids)"
         [isAuthenticated]="data.auth ?? false"
+        [userType]="data.user?.userType || null"
         (toggleFavorite)="onToggleFavorite($event)">
       </app-pet-card>
     </div>

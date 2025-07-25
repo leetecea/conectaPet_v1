@@ -47,6 +47,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard] // Protegendo a rota
     },
     {
+        path: 'meus-pets',
+        loadComponent: () => import('./pages/meus-pets/meus-pets.component').then(m => m.MeusPetsComponent),
+        canActivate: [AuthGuard]
+    },
+    {
         path: '**',
         redirectTo: 'feed'
     }

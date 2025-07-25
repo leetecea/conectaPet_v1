@@ -1,5 +1,230 @@
 @import '../../../styles/variables.scss';
 
+.details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  padding-top: 5.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.gallery-container {
+  .main-image {
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      &.prev {
+        left: 10px;
+      }
+
+      &.next {
+        right: 10px;
+      }
+    }
+  }
+}
+
+.info-container {
+  .pet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    .pet-name {
+      font-size: 2.5rem;
+      color: $text-color;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .favorite-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid $primary-color;
+      border-radius: 25px;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: $primary-color;
+
+      &:hover {
+        background: $primary-color;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      &.favorited {
+        background: $primary-color;
+        color: white;
+      }
+
+      .heart-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .pet-details {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .detail-item {
+      color: $text-color;
+      
+      strong {
+        font-weight: 600;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  .ong-info {
+    background: lighten($primary-color, 45%);
+    border: 1px solid lighten($primary-color, 35%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    h3 {
+      color: $primary-color;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .ong-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .detail-item {
+        color: $text-color;
+        
+        strong {
+          font-weight: 600;
+          margin-right: 0.5rem;
+        }
+      }
+
+      .btn-view-ong {
+        background: $primary-color;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-start;
+
+        &:hover {
+          background: darken($primary-color, 10%);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  .pet-description {
+    margin-bottom: 2rem;
+
+    h3 {
+      color: $text-color;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      flex: 1;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.btn-adopt {
+        background: $primary-color;
+        color: white;
+        box-shadow: 0 4px 12px rgba(46, 135, 2, 0.3);
+
+        &:hover {
+          background: darken($primary-color, 10%);
+          transform: translateY(-2px);
+        }
+      }
+
+      &.btn-contact {
+        background: transparent;
+        color: $primary-color;
+        border: 2px solid $primary-color;
+
+        &:hover {
+          background: $primary-color;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
 .pet-details-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -186,6 +411,36 @@
 
 // Responsividade
 @media (max-width: 768px) {
+  .details-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-top: 4rem;
+  }
+
+  .gallery-container .main-image {
+    height: 300px;
+  }
+
+  .info-container {
+    .pet-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+
+      .favorite-button {
+        align-self: center;
+      }
+    }
+
+    .pet-details {
+      grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+  }
+
   .pet-details-content {
     grid-template-columns: 1fr;
     gap: 2rem;

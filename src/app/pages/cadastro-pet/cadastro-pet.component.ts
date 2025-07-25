@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { PetService } from '../../services/pet.service';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 interface PetForm {
   nome: FormControl<string | null>;
@@ -15,7 +17,8 @@ interface PetForm {
   porte: FormControl<string | null>;
   cor: FormControl<string | null>;
   descricao: FormControl<string | null>;
-  imagens: FormControl<File[] | null>;
+  imageUrl: FormControl<string | null>;
+  imageAlt: FormControl<string | null>;
 }
 
 @Component({
@@ -24,6 +27,7 @@ interface PetForm {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     DefaultLoginLayoutComponent,
     PrimaryInputComponent
   ],
@@ -32,14 +36,20 @@ interface PetForm {
 })
 export class CadastroPetComponent {
   petForm: FormGroup<PetForm>;
-  previewUrls: (string | ArrayBuffer)[] = [];
-  maxImages = 5;
+  previewUrl: string | ArrayBuffer | null = null;
+  uploadMethod: 'file' | 'url' = 'file';
+  selectedFile: File | null = null;
+  imageLoadError = false;
+  imageLoaded = false;
 
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private petService: PetService
+    private petService: PetService,
+    private authService: AuthService
   ) {
+    this.checkUserPermissions();
+    
     this.petForm = new FormGroup({
       nome: new FormControl('', [Validators.required, Validators.minLength(2)]),
       tipoAnimal: new FormControl('', [Validators.required]),
@@ -48,58 +58,72 @@ export class CadastroPetComponent {
       porte: new FormControl('', [Validators.required]),
       cor: new FormControl('', [Validators.required]),
       descricao: new FormControl('', [Validators.required, Validators.minLength(20), Validators.maxLength(300)]),
-      imagens: new FormControl<File[]>([])
+      imageUrl: new FormControl(''),
+      imageAlt: new FormControl('')
+    });
+  }
+
+  private checkUserPermissions(): void {
+    this.authService.currentUser$.subscribe(user => {
+      if (user && user.userType !== 'ong') {
+        this.toastr.error('Apenas ONGs podem cadastrar pets!');
+        this.router.navigate(['/feed']);
+      }
     });
   }
 
   onFileSelected(event: Event): void {
     const files = (event.target as HTMLInputElement).files;
-    if (files) {
-      const currentFiles = this.petForm.get('imagens')?.value || [];
-      const newFiles = Array.from(files);
+    if (files && files.length > 0) {
+      const file = files[0];
 
-      // Verifica o limite de imagens
-      if (currentFiles.length + newFiles.length > this.maxImages) {
-        this.toastr.warning(`Máximo de ${this.maxImages} fotos permitidas!`);
-        return;
-      }
-
-      // Verifica o tamanho dos arquivos (máximo 5MB por arquivo)
+      // Verifica o tamanho do arquivo (máximo 5MB)
       const maxSize = 5 * 1024 * 1024; // 5MB
-      const oversizedFiles = newFiles.filter(file => file.size > maxSize);
-      if (oversizedFiles.length > 0) {
-        this.toastr.error('Algumas imagens são muito grandes. Máximo 5MB por foto.');
+      if (file.size > maxSize) {
+        this.toastr.error('Imagem muito grande. Máximo 5MB por foto.');
         return;
       }
 
-      // Atualiza o valor no formulário
-      this.petForm.patchValue({ imagens: [...currentFiles, ...newFiles] });
-      this.petForm.get('imagens')?.updateValueAndValidity();
+      // Verifica o tipo do arquivo
+      if (!file.type.startsWith('image/')) {
+        this.toastr.error('Por favor, selecione apenas arquivos de imagem.');
+        return;
+      }
 
-      // Gera as URLs para pré-visualização
-      newFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.previewUrls.push(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      });
+      this.selectedFile = file;
+      
+      // Gera a URL para pré-visualização
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
 
-      this.toastr.success(`${newFiles.length} foto(s) adicionada(s)!`);
+      this.toastr.success('Foto adicionada com sucesso!');
     }
   }
 
-  removeImage(index: number): void {
-    // Remove a URL de pré-visualização
-    this.previewUrls.splice(index, 1);
-
-    // Remove o arquivo do FormControl
-    const currentFiles = this.petForm.get('imagens')?.value || [];
-    currentFiles.splice(index, 1);
-    this.petForm.patchValue({ imagens: currentFiles });
-    this.petForm.get('imagens')?.updateValueAndValidity();
+  removeImage(): void {
+    this.previewUrl = null;
+    this.selectedFile = null;
+    
+    // Limpa o input file
+    const fileInput = document.getElementById('imagem') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
 
     this.toastr.info('Foto removida!');
+  }
+
+  onImageError(): void {
+    this.imageLoadError = true;
+    this.imageLoaded = false;
+  }
+
+  onImageLoad(): void {
+    this.imageLoadError = false;
+    this.imageLoaded = true;
   }
 
   getDescriptionLength(): number {
@@ -110,9 +134,39 @@ export class CadastroPetComponent {
     if (this.petForm.valid) {
       const formData = this.petForm.value;
 
-      // Validações adicionais
-      if (!this.previewUrls.length) {
-        this.toastr.warning('Adicione pelo menos uma foto do pet!');
+      // Validação de imagem
+      if (this.uploadMethod === 'file' && !this.selectedFile) {
+        this.toastr.warning('Adicione uma foto do pet!');
+        return;
+      }
+
+      if (this.uploadMethod === 'url') {
+        if (!formData.imageUrl || !formData.imageAlt) {
+          this.toastr.warning('Preencha a URL e descrição da imagem!');
+          return;
+        }
+        if (this.imageLoadError) {
+          this.toastr.error('A URL da imagem não é válida!');
+          return;
+        }
+      }
+
+      // Prepara os dados do pet
+      let imageUrl = '';
+      let imageAlt = '';
+
+      if (this.uploadMethod === 'url') {
+        imageUrl = formData.imageUrl || '';
+        imageAlt = formData.imageAlt || '';
+      } else {
+        // Para upload de arquivo, usamos uma URL placeholder
+        // Em um cenário real, você faria upload para um serviço de storage
+        imageUrl = `https://via.placeholder.com/400x300?text=${encodeURIComponent(formData.nome || 'Pet')}`;
+        imageAlt = `Foto de ${formData.nome}`;
+      }
+
+      if (!imageUrl) {
+        this.toastr.warning('Adicione uma imagem do pet!');
         return;
       }
 
@@ -124,7 +178,8 @@ export class CadastroPetComponent {
         size: formData.porte,
         color: formData.cor,
         description: formData.descricao,
-        imageUrls: this.previewUrls.map((url, index) => `pet-image-${Date.now()}-${index}.jpg`)
+        imageUrls: [imageUrl],
+        imageAlt: imageAlt
       };
 
       this.petService.createPet(petData).subscribe({

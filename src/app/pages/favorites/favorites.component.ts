@@ -21,6 +21,7 @@ export class FavoritesComponent implements OnInit {
   favoritePets$: Observable<Pet[]>;
   favoritePetIds$: Observable<number[]>;
   isAuthenticated$: Observable<boolean>; // 2. Crie a propriedade isAuthenticated$
+  currentUser$: Observable<any>;
 
   constructor(
     private favoritesService: FavoritesService,
@@ -30,6 +31,7 @@ export class FavoritesComponent implements OnInit {
   ) {
     this.favoritePetIds$ = this.favoritesService.favorites$;
     this.isAuthenticated$ = this.authService.isAuthenticated$; // 4. Atribua o observable
+    this.currentUser$ = this.authService.currentUser$;
     this.favoritePets$ = this.favoritesService.favorites$.pipe(
       switchMap(ids => {
         if (ids.length === 0) {

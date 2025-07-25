@@ -38,4 +38,16 @@ export class PetService {
   createPet(petData: any): Observable<Pet> {
     return this.http.post<Pet>(this.apiUrl, petData, { headers: this.getAuthHeaders() });
   }
+
+  getMyPets(): Observable<Pet[]> {
+    return this.http.get<Pet[]>(`${this.apiUrl}/my-pets`, { headers: this.getAuthHeaders() });
+  }
+
+  updatePet(petId: number, petData: any): Observable<Pet> {
+    return this.http.put<Pet>(`${this.apiUrl}/${petId}`, petData, { headers: this.getAuthHeaders() });
+  }
+
+  deletePet(petId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${petId}`, { headers: this.getAuthHeaders() });
+  }
 }

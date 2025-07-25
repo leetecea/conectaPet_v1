@@ -22,6 +22,7 @@ export class FeedComponent implements OnInit {
   showFavorites = false;
   favoritePetIds$: Observable<number[]>;
   isAuthenticated$: Observable<boolean>; // <-- ADICIONE ESTA LINHA
+  currentUser$: Observable<any>;
 
   constructor(
     private petService: PetService,
@@ -31,19 +32,41 @@ export class FeedComponent implements OnInit {
   ) {
     this.favoritePetIds$ = this.favoritesService.favorites$;
     this.isAuthenticated$ = this.authService.isAuthenticated$; // <-- ATRIBUA O OBSERVABLE
+    this.currentUser$ = this.authService.currentUser$;
   }
 
   ngOnInit(): void {
-    this.petService.getAllPets().subscribe(data => {
-      this.pets = data;
-    });
     this.route.queryParams.subscribe(params => {
       this.showFavorites = params['favorites'] === 'true';
+      this.loadPets();
     });
+  }
+
+  private loadPets(): void {
+    if (this.showFavorites) {
+      this.favoritesService.favorites$.subscribe(favoriteIds => {
+        if (favoriteIds.length > 0) {
+          this.petService.getFavoritesPets(favoriteIds).subscribe(data => {
+            this.pets = data;
+          });
+        } else {
+          this.pets = [];
+        }
+      });
+    } else {
+      this.petService.getAllPets().subscribe(data => {
+        this.pets = data;
+      });
+    }
   }
 
   onToggleFavorite(petId: number): void {
     this.favoritesService.toggleFavorite(petId);
+    
+    // Se estamos na página de favoritos, recarrega a lista
+    if (this.showFavorites) {
+      setTimeout(() => this.loadPets(), 100);
+    }
   }
 
   isPetFavorited(petId: number, favIds: number[] | null): boolean {

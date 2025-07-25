@@ -6,7 +6,7 @@
     </div>
 
     <button
-      *ngIf="isAuthenticated"
+      *ngIf="isAuthenticated && userType === 'adotante'"
       class="favorite-btn"
       [class.favorited]="isFavorited"
       (click)="onToggleFavorite($event)"
@@ -22,6 +22,9 @@
       <span>{{ pet.age }} anos</span>
       <span>{{ pet.size }}</span>
       <span>Cor: {{ pet.color }}</span>
+    </div>
+    <div class="pet-owner" *ngIf="pet.ownerName">
+      <small>Por: {{ pet.ownerName }}</small>
     </div>
   </div>
 </div>

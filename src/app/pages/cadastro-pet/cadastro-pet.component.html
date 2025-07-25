@@ -118,36 +118,74 @@
     <div class="form-section photo-section">
       <h3 class="section-title">
         <span class="section-icon">📸</span>
-        Fotos do Pet
+        Foto do Pet
       </h3>
 
       <div class="image-upload-wrapper">
-        <label for="imagens" class="upload-label" [class.has-images]="previewUrls.length > 0">
-          <div class="upload-content">
-            <img src="/assets/svg/upload-icon.svg" alt="Upload Icon" width="32">
-            <div class="upload-text">
-              <span class="upload-title">Adicionar Fotos</span>
-              <small>Clique para selecionar ou arraste as imagens aqui</small>
-              <small class="upload-info">Formatos: JPG, PNG • Máximo: 5 fotos</small>
-            </div>
-          </div>
-        </label>
-        <input
-          type="file"
-          id="imagens"
-          accept="image/*"
-          multiple
-          (change)="onFileSelected($event)"
-        >
+        <div class="upload-method-selector">
+          <label class="radio-option">
+            <input type="radio" name="uploadMethod" value="file" [(ngModel)]="uploadMethod" [ngModelOptions]="{standalone: true}">
+            <span>📁 Upload de arquivo</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="uploadMethod" value="url" [(ngModel)]="uploadMethod" [ngModelOptions]="{standalone: true}">
+            <span>🔗 URL da imagem</span>
+          </label>
+        </div>
 
-        <div *ngIf="previewUrls.length > 0" class="image-preview-gallery">
-          <div *ngFor="let url of previewUrls; let i = index" class="preview-item">
-            <img [src]="url" alt="Pré-visualização da imagem {{ i + 1 }}">
-            <button type="button" class="remove-btn" (click)="removeImage(i)" title="Remover foto">
+        <!-- Upload de arquivo -->
+        <div *ngIf="uploadMethod === 'file'" class="file-upload-section">
+          <label for="imagem" class="upload-label" [class.has-image]="previewUrl">
+            <div class="upload-content">
+              <img src="/assets/svg/upload-icon.svg" alt="Upload Icon" width="32">
+              <div class="upload-text">
+                <span class="upload-title">Adicionar Foto</span>
+                <small>Clique para selecionar ou arraste a imagem aqui</small>
+                <small class="upload-info">Formatos: JPG, PNG • Máximo: 5MB</small>
+              </div>
+            </div>
+          </label>
+          <input
+            type="file"
+            id="imagem"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          >
+
+          <div *ngIf="previewUrl" class="image-preview">
+            <img [src]="previewUrl" alt="Pré-visualização da imagem">
+            <button type="button" class="remove-btn" (click)="removeImage()" title="Remover foto">
               <span>&times;</span>
             </button>
-            <div class="image-overlay" *ngIf="i === 0">
-              <span class="main-photo-badge">Foto Principal</span>
+          </div>
+        </div>
+
+        <!-- URL da imagem -->
+        <div *ngIf="uploadMethod === 'url'" class="url-upload-section">
+          <app-primary-input
+            formControlName="imageUrl"
+            inputName="imageUrl"
+            type="text"
+            label="URL da Imagem *"
+            placeholder="https://exemplo.com/imagem.jpg">
+            <img src="/assets/svg/email-icon.svg"/>
+          </app-primary-input>
+
+          <app-primary-input
+            formControlName="imageAlt"
+            inputName="imageAlt"
+            type="text"
+            label="Descrição da Imagem *"
+            placeholder="Ex: Cachorro dourado brincando no parque">
+            <img src="/assets/svg/email-icon.svg"/>
+          </app-primary-input>
+
+          <div *ngIf="petForm.get('imageUrl')?.value" class="url-preview">
+            <img [src]="petForm.get('imageUrl')?.value" [alt]="petForm.get('imageAlt')?.value || 'Preview'" 
+                 (error)="onImageError()" (load)="onImageLoad()">
+            <div class="preview-status" [ngClass]="{'error': imageLoadError, 'success': !imageLoadError && imageLoaded}">
+              <span *ngIf="imageLoadError">❌ Erro ao carregar imagem</span>
+              <span *ngIf="!imageLoadError && imageLoaded">✅ Imagem carregada com sucesso</span>
             </div>
           </div>
         </div>
@@ -159,7 +197,7 @@
         <span class="info-icon">ℹ️</span>
         <div class="info-content">
           <strong>Importante:</strong>
-          <p>Certifique-se de que todas as informações estão corretas. Fotos de boa qualidade aumentam as chances de adoção!</p>
+          <p>Certifique-se de que todas as informações estão corretas. Uma foto de boa qualidade aumenta as chances de adoção!</p>
         </div>
       </div>
     </div>

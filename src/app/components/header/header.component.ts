@@ -15,6 +15,7 @@ import { MaterialModules } from '../../material';
 export class HeaderComponent {
   isAuthenticated$: Observable<boolean>;
   userId: number | null = null;
+  userType: string | null = null;
 
   constructor(private authService: AuthService) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
@@ -23,6 +24,7 @@ export class HeaderComponent {
    ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.userId = user?.id || null;
+      this.userType = user?.userType || null;
     });
   }
 

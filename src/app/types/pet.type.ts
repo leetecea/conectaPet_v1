@@ -8,12 +8,12 @@ export interface Pet {
   species: string;
   breed: string;
   age: number;
-  gender: string;
   size: PetSize;
   color: string;
   description: string;
   imageUrls: string[];
   ownerId?: number;
+  ownerName?: string;
   adoptionStatus?: string;
   createdAt?: Date;
 }

@@ -12,7 +12,7 @@
     <div class="pet-header">
       <h1 class="pet-name">{{ pet.name }}</h1>
       <button
-        *ngIf="isAuthenticated$ | async"
+        *ngIf="(isAuthenticated$ | async) && (currentUser$ | async)?.userType === 'adotante'"
         class="favorite-button"
         (click)="toggleFavorite()"
         [class.favorited]="isFavorited"
@@ -25,15 +25,33 @@
         <div class="detail-item"><strong>Espécie:</strong> {{ pet.species }}</div>
         <div class="detail-item"><strong>Raça:</strong> {{ pet.breed }}</div>
         <div class="detail-item"><strong>Idade:</strong> {{ pet.age }} anos</div>
-        <div class="detail-item"><strong>Gênero:</strong> {{ pet.gender }}</div>
         <div class="detail-item"><strong>Porte:</strong> {{ pet.size }}</div>
         <div class="detail-item"><strong>Cor:</strong> {{ pet.color }}</div>
     </div>
+    
+    <div class="ong-info" *ngIf="pet.ownerName">
+      <h3>Informações da ONG</h3>
+      <div class="ong-details">
+        <div class="detail-item"><strong>Nome:</strong> {{ pet.ownerName }}</div>
+        <button class="btn-view-ong" (click)="viewOngProfile()" *ngIf="pet.ownerId">
+          Ver Perfil da ONG
+        </button>
+      </div>
+    </div>
+    
     <div class="pet-description">
         <h3>Descrição</h3>
         <p>{{ pet.description }}</p>
     </div>
-    <button class="btn-adopt">Quero Adotar</button>
+    
+    <div class="action-buttons">
+      <button class="btn-adopt" *ngIf="(currentUser$ | async)?.userType === 'adotante'">
+        Quero Adotar
+      </button>
+      <button class="btn-contact" *ngIf="(currentUser$ | async)?.userType === 'adotante'">
+        Entrar em Contato
+      </button>
+    </div>
   </div>
 </main>
 <ng-template #loading>

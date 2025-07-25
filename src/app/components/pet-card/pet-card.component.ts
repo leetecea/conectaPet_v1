@@ -14,6 +14,7 @@ export class PetCardComponent {
   @Input() pet!: Pet;
   @Input() isFavorited: boolean = false;
   @Input() isAuthenticated: boolean = false; 
+  @Input() userType: string | null = null;
   @Output() toggleFavorite = new EventEmitter<number>();
 
   constructor(private router: Router) {}

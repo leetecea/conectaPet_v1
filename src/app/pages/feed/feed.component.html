@@ -40,7 +40,8 @@
     class="pets-grid"
     *ngIf="{
       favIds: favoritePetIds$ | async,
-      auth: isAuthenticated$ | async
+      auth: isAuthenticated$ | async,
+      user: currentUser$ | async
     } as data"
   >
     @for (pet of pets; track pet.id) {
@@ -48,6 +49,7 @@
       [pet]="pet"
       [isFavorited]="isPetFavorited(pet.id, data.favIds)"
       [isAuthenticated]="data.auth ?? false"
+      [userType]="data.user?.userType || null"
       (toggleFavorite)="onToggleFavorite($event)"
     >
     </app-pet-card>

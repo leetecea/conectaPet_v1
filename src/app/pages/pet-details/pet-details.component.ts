@@ -19,6 +19,7 @@ export class PetDetailsComponent implements OnInit, OnDestroy {
   pet: Pet | null = null;
   isFavorited: boolean = false;
   isAuthenticated$: Observable<boolean>;
+  currentUser$: Observable<any>;
   currentImageIndex = 0;
   private favoriteSub: Subscription | undefined;
 
@@ -26,9 +27,11 @@ export class PetDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private petService: PetService,
     private favoritesService: FavoritesService, 
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
+    this.currentUser$ = this.authService.currentUser$;
   }
 
   ngOnInit(): void {
@@ -60,6 +63,12 @@ export class PetDetailsComponent implements OnInit, OnDestroy {
   toggleFavorite(): void {
     if (this.pet) {
       this.favoritesService.toggleFavorite(this.pet.id);
+    }
+  }
+
+  viewOngProfile(): void {
+    if (this.pet?.ownerId) {
+      this.router.navigate(['/profile', this.pet.ownerId]);
     }
   }
 

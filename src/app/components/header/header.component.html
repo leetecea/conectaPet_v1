@@ -16,7 +16,7 @@
             <mat-icon>pets</mat-icon>
             <span>Adotar</span>
           </a>
-          <a
+          <a *ngIf="userType === 'adotante'"
             [routerLink]="['/feed']"
             [queryParams]="{ favorites: 'true' }"
             routerLinkActive="active"
@@ -25,9 +25,13 @@
             <mat-icon>star</mat-icon>
             <span>Favoritos</span>
           </a>
-          <a routerLink="/cadastro-pet" routerLinkActive="active" class="nav-link">
+          <a *ngIf="userType === 'ong'" routerLink="/cadastro-pet" routerLinkActive="active" class="nav-link">
             <mat-icon>add_circle</mat-icon>
             <span>Cadastrar Pet</span>
+          </a>
+          <a *ngIf="userType === 'ong'" routerLink="/meus-pets" routerLinkActive="active" class="nav-link">
+            <mat-icon>list</mat-icon>
+            <span>Meus Pets</span>
           </a>
           <a [routerLink]="['/profile', userId]"  routerLinkActive="active" class="nav-link">
             <mat-icon>person</mat-icon>
